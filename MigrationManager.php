@@ -14,7 +14,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\DBAL\Migrations\Migration;
 use Doctrine\DBAL\Migrations\MigrationException;
-use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrationManager
@@ -23,14 +23,6 @@ class MigrationManager
      * @var Configuration
      */
     protected $configuration;
-    /**
-     * @var InputInterface
-     */
-    protected $input;
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
 
     /**
      * MigrationManager constructor.
@@ -45,29 +37,6 @@ class MigrationManager
         $this->configuration = $this->doBuildConfiguration($connection, $name, $path, $namespace);
     }
 
-    /**
-     * @param InputInterface $input
-     *
-     * @return $this
-     */
-    public function setInput(InputInterface $input)
-    {
-        $this->input = $input;
-
-        return $this;
-    }
-
-    /**
-     * @param OutputInterface $output
-     *
-     * @return $this
-     */
-    public function setOutput(OutputInterface $output)
-    {
-        $this->output = $output;
-
-        return $this;
-    }
 
     /**
      * Create a new migration instance to execute the migrations.
@@ -89,43 +58,8 @@ class MigrationManager
     {
         return $this->createMigration()->writeSqlFile(
             is_bool($path) ? getcwd() : $path,
-            $this->diffMigrations($version)
+            $this->getVersionNameFromAlias($version)
         );
-    }
-
-    /**
-     * @param string $version
-     *
-     * @return string
-     */
-    protected function diffMigrations(string $version)
-    {
-        $executedMigrations = $this->configuration->getMigratedVersions();
-        $availableMigrations = $this->configuration->getAvailableVersions();
-
-        $version = $this->getVersionNameFromAlias($version);
-        if ($version === false) {
-            return false;
-        }
-
-        $executedUnavailableMigrations = array_diff($executedMigrations, $availableMigrations);
-        if (!empty($executedUnavailableMigrations)) {
-            $this->output->writeln(sprintf(
-                '<error>WARNING! You have %s previously executed migrations'
-                .' in the database that are not registered migrations.</error>',
-                count($executedUnavailableMigrations)
-            ));
-
-            foreach ($executedUnavailableMigrations as $executedUnavailableMigration) {
-                $this->output->writeln(sprintf(
-                    '    <comment>>></comment> %s (<comment>%s</comment>)',
-                    $this->configuration->getDateTime($executedUnavailableMigration),
-                    $executedUnavailableMigration
-                ));
-            }
-        }
-
-        return $version;
     }
 
     /**
@@ -138,7 +72,7 @@ class MigrationManager
     {
         $migration = $this->createMigration();
         $migration->setNoMigrationException(true);
-        $migration->migrate($this->diffMigrations($version), $dryRun, true);
+        $migration->migrate($this->getVersionNameFromAlias($version), $dryRun, true);
 
         return true;
     }
@@ -217,24 +151,6 @@ class MigrationManager
     }
 
     /**
-     * @return string
-     */
-    public function getMigrationDirectory(): string
-    {
-        $dir = $this->configuration->getMigrationsDirectory();
-        $dir = $dir ? $dir : getcwd();
-        $dir = rtrim($dir, '/');
-
-        if (!file_exists($dir)) {
-            throw new \InvalidArgumentException(sprintf('Migrations directory "%s" does not exist.', $dir));
-        }
-
-        $this->createDirIfNotExists($dir);
-
-        return $dir;
-    }
-
-    /**
      * @param $dir
      */
     private function createDirIfNotExists($dir)
@@ -251,8 +167,11 @@ class MigrationManager
      *
      * @return string
      */
-    public function generateMigration(string $template, $up = null, $down = null)
+    public function generateMigration($template = null, $up = null, $down = null): string
     {
+        if (empty($template)) {
+            $template = file_get_contents(__DIR__ .'/migration.php.template');
+        }
         $version = $this->configuration->generateVersionNumber();
         $placeHolders = [
             '<namespace>',
@@ -268,13 +187,9 @@ class MigrationManager
         ];
         $code = str_replace($placeHolders, $replacements, $template);
         $code = preg_replace('/^ +$/m', '', $code);
-        $path = $this->getMigrationDirectory().'/Version'.$version.'.php';
+        $path = $this->configuration->getMigrationsDirectory().'/Version'.$version.'.php';
 
         file_put_contents($path, $code);
-
-        if ($this->input && $editorCmd = $this->input->getOption('editor-cmd')) {
-            proc_open($editorCmd.' '.escapeshellarg($path), [], $pipes);
-        }
 
         return $path;
     }

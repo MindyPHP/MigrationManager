@@ -54,8 +54,6 @@ class MigrationManagerTest extends TestCase
 
     public function testConfiguration()
     {
-        $this->assertSame(sprintf("%s/Migrations", __DIR__), $this->manager->getMigrationDirectory());
-
         $configuration = $this->manager->getConfiguration();
         $this->assertInstanceOf(Configuration::class, $configuration);
         $this->assertSame('test_migrations', $configuration->getMigrationsTableName());
@@ -109,6 +107,11 @@ class MigrationManagerTest extends TestCase
         $this->assertSame(
             file_get_contents($this->manager->generateMigration($content)),
             $content
+        );
+
+        $this->assertContains(
+            'extends AbstractMigration',
+            file_get_contents($this->manager->generateMigration())
         );
     }
 }
