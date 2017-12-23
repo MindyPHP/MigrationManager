@@ -67,7 +67,7 @@ class MigrationManager
      *
      * @return bool
      */
-    public function doMigrate(string $version, bool $dryRun): bool
+    public function doMigrate(string $version = 'latest', bool $dryRun = false): bool
     {
         $migration = $this->createMigration();
         $migration->setNoMigrationException(true);
