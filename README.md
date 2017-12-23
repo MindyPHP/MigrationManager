@@ -5,13 +5,13 @@
 
 ## Установка
 
-```
+```bash
 composer require mindy/migration-manager --prefer-dist
 ```
 
 ## Использование
 
-```
+```php
 <?php
 
 use Doctrine\DBAL\DriverManager;
