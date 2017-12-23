@@ -1,14 +1,11 @@
 {
-    "name": "mindy/migration-bundle",
+    "name": "mindy/migration-manager",
     "license": "MIT",
     "config": {
         "preferred-install": {
             "*": "dist"
         },
         "sort-packages": true
-    },
-    "conflict": {
-        "doctrine/doctrine-bundle": "*"
     },
     "autoload": {
         "psr-4": {
