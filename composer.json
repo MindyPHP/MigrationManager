@@ -24,8 +24,8 @@
         }
     },
     "require": {
-        "doctrine/dbal": "^2.5",
-        "doctrine/migrations": "^1.5"
+        "doctrine/dbal": "~2.0",
+        "doctrine/migrations": "~1.0"
     },
     "authors": [
         {
@@ -35,10 +35,9 @@
         }
     ],
     "require-dev": {
-        "phpunit/php-code-coverage": "^5.3",
         "phpunit/phpunit": "^6.5",
-        "symfony/dependency-injection": "^3.4",
-        "symfony/filesystem": "^3.4",
-        "symfony/http-kernel": "^3.4"
+        "symfony/dependency-injection": "~3.0",
+        "symfony/filesystem": "~3.0",
+        "symfony/http-kernel": "~3.0"
     }
 }
