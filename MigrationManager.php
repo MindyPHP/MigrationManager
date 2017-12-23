@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Mindy Framework.
  * (c) 2017 Maxim Falaleev
@@ -14,8 +16,6 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\DBAL\Migrations\Migration;
 use Doctrine\DBAL\Migrations\MigrationException;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrationManager
 {
@@ -36,7 +36,6 @@ class MigrationManager
     {
         $this->configuration = $this->doBuildConfiguration($connection, $name, $path, $namespace);
     }
-
 
     /**
      * Create a new migration instance to execute the migrations.
@@ -106,8 +105,10 @@ class MigrationManager
 
     /**
      * @param string $versionAlias
-     * @return string
+     *
      * @throws MigrationException
+     *
+     * @return string
      */
     private function getVersionNameFromAlias($versionAlias): string
     {
@@ -170,7 +171,7 @@ class MigrationManager
     public function generateMigration($template = null, $up = null, $down = null): string
     {
         if (empty($template)) {
-            $template = file_get_contents(__DIR__ .'/migration.php.template');
+            $template = file_get_contents(__DIR__.'/migration.php.template');
         }
         $version = $this->configuration->generateVersionNumber();
         $placeHolders = [

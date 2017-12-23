@@ -9,7 +9,7 @@ matrix:
   fast_finish: true
 
 before_script:
-    - travis_retry composer install --prefer-source --dev --no-interaction
+    - travis_retry composer install --prefer-source --no-interaction
 
 script:
     - vendor/bin/phpunit --coverage-clover=coverage.xml

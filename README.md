@@ -1,3 +1,4 @@
 # Migration Manager
 
-[![Coverage Status](https://coveralls.io/repos/github/MindyPHP/MigrationManager/badge.svg?branch=master)](https://coveralls.io/github/MindyPHP/MigrationManager?branch=master)
+[![Build Status](https://travis-ci.org/MindyPHP/MigrationManager.svg?branch=dev)](https://travis-ci.org/MindyPHP/MigrationManager)
+[![codecov](https://codecov.io/gh/MindyPHP/MigrationManager/branch/master/graph/badge.svg)](https://codecov.io/gh/MindyPHP/MigrationManager)
