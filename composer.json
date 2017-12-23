@@ -1,0 +1,44 @@
+{
+    "name": "mindy/migration-bundle",
+    "license": "MIT",
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
+    "conflict": {
+        "doctrine/doctrine-bundle": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Component\\MigrationManager\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mindy\\Component\\MigrationManager\\Tests\\": "./Tests/"
+        }
+    },
+    "require": {
+        "doctrine/dbal": "^2.5",
+        "doctrine/migrations": "^1.5"
+    },
+    "authors": [
+        {
+            "name": "Maxim Falaleev",
+            "email": "max@studio107.ru",
+            "homepage": "http://studio107.ru"
+        }
+    ],
+    "require-dev": {
+        "phpunit/php-code-coverage": "^5.3",
+        "phpunit/phpunit": "^6.5",
+        "symfony/dependency-injection": "^3.4",
+        "symfony/filesystem": "^3.4",
+        "symfony/http-kernel": "^3.4"
+    }
+}
