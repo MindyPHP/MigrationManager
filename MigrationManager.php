@@ -19,6 +19,8 @@ use Doctrine\DBAL\Migrations\MigrationException;
 
 class MigrationManager
 {
+    const TABLE_NAME = 'migrations';
+
     /**
      * @var Configuration
      */
@@ -137,10 +139,13 @@ class MigrationManager
      */
     public function doNormalizeName($name)
     {
+        if (empty($name)) {
+            return self::TABLE_NAME;
+        }
         $cleanName = str_replace('Bundle', '', $name);
         $normalizedName = trim(strtolower(preg_replace('/(?<![A-Z])[A-Z]/', '_\0', $cleanName)), '_');
 
-        return sprintf('%s_migrations', $normalizedName);
+        return sprintf('%s_%s', $normalizedName, self::TABLE_NAME);
     }
 
     /**
